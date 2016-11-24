@@ -13,16 +13,26 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.views.generic.base import RedirectView
+# from django.views.generic.base import RedirectView
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.core.urlresolvers import reverse_lazy
+from rest_framework import routers
+from quickstart import views
+# from django.core.urlresolvers import reverse_lazy
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'group', views.GroupViewSet)
 
 urlpatterns = [
     # /polls/*
     url(r'^polls/', include('polls.urls')),
     # /admin/*
     url(r'^admin/', admin.site.urls),
+
+    url(r'^api/v1/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+
     # Capture anything that previously didn't match
-    url(r'^.*$', RedirectView.as_view(url=reverse_lazy('polls:index'), permanent=False)),
+    # url(r'^.*$', RedirectView.as_view(url=reverse_lazy('polls:index'), permanent=False)),
 ]
